@@ -573,7 +573,7 @@ async function askAI(message){
 
     try{
 
-        const response = await fetch("https://helpdesk-chatbot-0k4l.onrender.com/",{
+        const response = await fetch("https://helpdesk-chatbot-0k4l.onrender.com/api/chat",{
             method:"POST",
             headers:{
                 "Content-Type":"application/json"
