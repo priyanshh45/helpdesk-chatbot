@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>IT Help Desk Portal · Incident & Service Request Management</title>
+<meta name="description" content="Enterprise IT Help Desk portal for incident and service request management, knowledge base, and analytics." />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: { DEFAULT: '#2563eb', foreground: '#ffffff' },
+          muted: { DEFAULT: '#f1f5f9', foreground: '#64748b' },
+          border: '#e2e8f0',
+          card: '#ffffff',
+          bg: '#f8fafc',
+        },
+        boxShadow: {
+          soft: '0 1px 2px rgba(15,23,42,.04), 0 1px 3px rgba(15,23,42,.06)',
+        }
+      }
+    }
+  }
+</script>
+<link rel="stylesheet" href="styles.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body class="bg-bg text-slate-800 antialiased">
+
+<!-- ============ LOGIN VIEW ============ -->
+<section id="view-login" class="view min-h-screen grid lg:grid-cols-2">
+  <div class="hidden lg:flex flex-col justify-between p-12 bg-gradient-to-br from-blue-600 to-indigo-700 text-white">
+    <div class="flex items-center gap-2 font-semibold text-xl">
+      <div class="w-10 h-10 grid place-items-center rounded-xl bg-white/15 backdrop-blur">
+        <i data-lucide="life-buoy"></i>
+      </div>
+      HelpDesk Portal
+    </div>
+    <div>
+      <h1 class="text-4xl font-bold leading-tight">Enterprise IT Support, <br/>simplified.</h1>
+      <p class="mt-4 text-white/80 max-w-md">Raise incidents, request services and track resolutions — all from one polished, ITIL-aligned portal.</p>
+      <ul class="mt-8 space-y-3 text-white/90 text-sm">
+        <li class="flex gap-2"><i data-lucide="check-circle-2" class="w-5 h-5"></i> Auto-priority via impact × urgency</li>
+        <li class="flex gap-2"><i data-lucide="check-circle-2" class="w-5 h-5"></i> Real-time SLA tracking & analytics</li>
+        <li class="flex gap-2"><i data-lucide="check-circle-2" class="w-5 h-5"></i> Knowledge base with instant search</li>
+      </ul>
+    </div>
+    <p class="text-white/60 text-xs">© 2026 HelpDesk Inc.</p>
+  </div>
+  <div class="flex items-center justify-center p-6">
+    <form id="loginForm" class="w-full max-w-md bg-white border border-border rounded-2xl shadow-soft p-8">
+      <h2 class="text-2xl font-semibold">Welcome back</h2>
+      <p class="text-sm text-muted-foreground mt-1">Sign in with your Employee ID.</p>
+      <div class="mt-6 space-y-4">
+        <div>
+          <label class="text-sm font-medium">Employee ID</label>
+          <input id="empId" required class="mt-1 w-full h-10 px-3 rounded-md border border-border focus:outline-none focus:ring-2 focus:ring-primary/40" placeholder="e.g. E10234 (try 'admin')" />
+        </div>
+        <div>
+          <label class="text-sm font-medium">Password</label>
+          <input id="empPass" type="password" required minlength="4" class="mt-1 w-full h-10 px-3 rounded-md border border-border focus:outline-none focus:ring-2 focus:ring-primary/40" placeholder="Min. 4 characters" />
+        </div>
+        <label class="flex items-center gap-2 text-sm text-muted-foreground">
+          <input type="checkbox" class="accent-primary" /> Remember me on this device
+        </label>
+        <button class="w-full h-10 rounded-md bg-primary text-white font-medium hover:bg-blue-700 transition">Sign in</button>
+        <p class="text-xs text-muted-foreground text-center">Demo · use any ID + password ≥4 chars. Use <b>admin</b> to unlock the Admin console.</p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ============ APP SHELL ============ -->
+<section id="view-app" class="view hidden min-h-screen">
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-border">
+    <div class="max-w-7xl mx-auto flex items-center gap-4 px-4 h-16">
+      <button id="menuBtn" class="lg:hidden p-2 -ml-2"><i data-lucide="menu"></i></button>
+      <div class="flex items-center gap-2 font-semibold">
+        <div class="w-8 h-8 grid place-items-center rounded-lg bg-primary text-white"><i data-lucide="life-buoy" class="w-4 h-4"></i></div>
+        HelpDesk Portal
+      </div>
+      <nav class="hidden lg:flex items-center gap-1 ml-6 text-sm">
+        <a data-nav="dashboard" class="nav-link px-3 py-2 rounded-md hover:bg-muted">Dashboard</a>
+        <a data-nav="incidents" class="nav-link px-3 py-2 rounded-md hover:bg-muted">Incidents</a>
+        <a data-nav="services" class="nav-link px-3 py-2 rounded-md hover:bg-muted">Service Requests</a>
+        <a data-nav="tickets" class="nav-link px-3 py-2 rounded-md hover:bg-muted">My Tickets</a>
+        <a data-nav="kb" class="nav-link px-3 py-2 rounded-md hover:bg-muted">Knowledge Base</a>
+        <a data-nav="reports" class="nav-link px-3 py-2 rounded-md hover:bg-muted">Reports</a>
+        <a data-nav="admin" data-admin-only class="nav-link px-3 py-2 rounded-md hover:bg-muted">Admin</a>
+      </nav>
+      <div class="ml-auto flex items-center gap-3">
+        <button class="relative p-2 rounded-md hover:bg-muted"><i data-lucide="bell"></i><span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full"></span></button>
+        <div class="relative">
+          <button id="profileBtn" class="flex items-center gap-2 pr-2 pl-1 py-1 rounded-full hover:bg-muted">
+            <span class="w-8 h-8 grid place-items-center rounded-full bg-primary text-white text-sm font-semibold" id="avatarInit">U</span>
+            <span class="hidden sm:block text-sm font-medium" id="userName">User</span>
+            <i data-lucide="chevron-down" class="w-4 h-4"></i>
+          </button>
+          <div id="profileMenu" class="hidden absolute right-0 mt-2 w-48 bg-white border border-border rounded-lg shadow-soft py-1 text-sm">
+            <a data-nav="profile" class="block px-3 py-2 hover:bg-muted cursor-pointer">Profile</a>
+            <button id="logoutBtn" class="w-full text-left px-3 py-2 hover:bg-muted text-rose-600">Sign out</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="mobileNav" class="hidden lg:hidden border-t border-border px-4 py-2 flex flex-wrap gap-1 text-sm">
+      <a data-nav="dashboard" class="nav-link px-3 py-2 rounded-md">Dashboard</a>
+      <a data-nav="incidents" class="nav-link px-3 py-2 rounded-md">Incidents</a>
+      <a data-nav="services" class="nav-link px-3 py-2 rounded-md">Services</a>
+      <a data-nav="tickets" class="nav-link px-3 py-2 rounded-md">My Tickets</a>
+      <a data-nav="kb" class="nav-link px-3 py-2 rounded-md">KB</a>
+      <a data-nav="reports" class="nav-link px-3 py-2 rounded-md">Reports</a>
+      <a data-nav="admin" data-admin-only class="nav-link px-3 py-2 rounded-md">Admin</a>
+    </div>
+  </header>
+
+  <main id="page" class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"></main>
+
+  <footer class="border-t border-border py-6 text-center text-xs text-muted-foreground">
+    © 2026 HelpDesk Portal · Demo build
+  </footer>
+</section>
+
+
+<!-- ============ AI CHATBOT ============ -->
+
+
+
+<button id="chatBtn" 
+class="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-primary text-white pl-4 pr-5 py-3 rounded-full shadow-lg">
+
+<i data-lucide="message-circle"></i>
+
+<span class="text-sm font-medium">
+AI Help Desk
+</span>
+
+</button>
+<!-- AI CHAT WINDOW -->
+<div id="chatBox" class="hidden fixed bottom-24 right-6 w-96 bg-white border border-border rounded-xl shadow-xl z-50">
+
+  <div class="bg-primary text-white p-4 rounded-t-xl font-semibold">
+    IT Help Desk AI
+  </div>
+
+  <div id="chatMessages" class="h-96 overflow-y-auto p-4 space-y-3 text-sm">
+  </div>
+
+  <div class="flex border-t p-3 gap-2">
+
+    <input 
+      id="chatInput"
+      class="flex-1 border rounded px-3 py-2"
+      placeholder="Ask IT issue..."
+    >
+
+    <button 
+      id="sendChat"
+      class="bg-primary text-white px-4 rounded">
+      Send
+    </button>
+
+  </div>
+
+</div>
+<!-- ============ TOAST ============ -->
+<div id="toast" class="fixed top-4 right-4 z-[60] hidden bg-white border border-border rounded-lg shadow-soft px-4 py-3 text-sm"></div>
+
+<!-- ============ MODAL ============ -->
+<div id="modal" class="fixed inset-0 z-[55] hidden items-center justify-center bg-slate-900/40 p-4">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6" id="modalBody"></div>
+</div>
+
+<script src="./app.js"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>
