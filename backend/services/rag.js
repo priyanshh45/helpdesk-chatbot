@@ -4,6 +4,12 @@ const { generateResponse } = require("./gemini");
 async function askRAG(userQuestion) {
 
     const relevantDocs = await searchKnowledge(userQuestion, 5);
+    
+    console.log("Top Results:");
+
+    relevantDocs.forEach((doc, index) => {
+        console.log(`${index + 1}. ${doc.file} (${doc.score.toFixed(3)})`);
+    });
 
     const context = relevantDocs
         .map(doc => `
