@@ -2,7 +2,8 @@ const { searchKnowledge } = require("./search");
 const { generateResponse } = require("./gemini");
 
 async function askRAG(userQuestion) {
-    // Retrieve top 3 most relevant documents
+
+    // Retrieve the top 3 relevant documents
     const relevantDocs = await searchKnowledge(userQuestion, 3);
 
     console.log("\n===== Top Retrieved Documents =====");
@@ -13,7 +14,7 @@ async function askRAG(userQuestion) {
         );
     });
 
-    // Build knowledge context
+    // Build context
     const context = relevantDocs
         .map(
             (doc) => `
@@ -26,41 +27,54 @@ ${doc.content}
         )
         .join("\n");
 
-    // Build prompt
+    // Prompt
     const prompt = `
 You are an AI-powered Enterprise IT Help Desk Assistant following ITIL and ITSM best practices.
 
-You have access to an internal IT Knowledge Base.
+You answer employee IT support questions using ONLY the provided Knowledge Base.
 
-=========================
+==================================================
 IMPORTANT RULES
-=========================
+==================================================
 
-1. Answer ONLY using the information in the KNOWLEDGE BASE.
+1. Answer ONLY using the KNOWLEDGE BASE.
+
 2. Never use your own knowledge.
+
 3. Never invent troubleshooting steps.
-4. Never recommend websites, software, or tools unless they appear in the knowledge base.
-5. If the knowledge base contains the answer, DO NOT ask unnecessary follow-up questions.
-6. If multiple documents are relevant, combine the information.
-7. If the answer does not exist in the knowledge base, reply exactly:
+
+4. Never recommend websites, software, tools, or solutions unless they appear in the knowledge base.
+
+5. If the knowledge base already contains the solution, do NOT ask unnecessary follow-up questions.
+
+6. Answer ONLY the user's specific question.
+
+7. Ignore retrieved documents that are not directly related to the user's request.
+
+8. Do NOT combine multiple SOPs unless the user explicitly asks for them.
+
+9. If a field (Priority, Department, Escalation) is not mentioned in the knowledge base, write:
+"Not specified in the knowledge base."
+
+10. If the answer cannot be found in the knowledge base, reply exactly:
 
 "I could not find this information in the knowledge base."
 
-=========================
+==================================================
 KNOWLEDGE BASE
-=========================
+==================================================
 
 ${context}
 
-=========================
+==================================================
 USER QUESTION
-=========================
+==================================================
 
 ${userQuestion}
 
-=========================
+==================================================
 RESPONSE FORMAT
-=========================
+==================================================
 
 # 🛠 IT Help Desk Solution
 
@@ -75,29 +89,31 @@ RESPONSE FORMAT
 ## Possible Causes
 
 ## Resolution Steps
-- Step 1
-- Step 2
-- Step 3
+
+1.
+2.
+3.
 
 ## Escalation
 
 ## Knowledge Source
-(List the document names used)
 
-Provide only the final answer.
+(List only the document(s) actually used.)
+
+Return only the final answer.
 `;
 
     const answer = await generateResponse(prompt);
 
     return {
         answer,
-        sources: relevantDocs.map((doc) => ({
+        sources: relevantDocs.map(doc => ({
             file: doc.file,
-            score: Number(doc.score.toFixed(3)),
-        })),
+            score: Number(doc.score.toFixed(3))
+        }))
     };
 }
 
 module.exports = {
-    askRAG,
+    askRAG
 };

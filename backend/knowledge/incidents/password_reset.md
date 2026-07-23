@@ -1,4 +1,18 @@
-# Password Reset SOP
+---
+title: Password Reset
+category: Service Request
+tags:
+  - password
+  - login
+  - account
+  - reset
+priority: High
+department: IT Help Desk
+---
+
+# Password Reset
+
+...
 
 ## Purpose
 

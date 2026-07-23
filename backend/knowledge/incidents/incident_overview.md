@@ -1,5 +1,16 @@
-# Incident Overview
+---
+title: Incident Management
+category: ITIL
+tags:
+  - incident
+  - itil
+  - ticket
+  - priority
+---
 
+# Incident Management
+
+...
 ## Purpose
 
 This document explains what an incident is, how incidents are handled, and the responsibilities of the IT Service Desk during the incident lifecycle.

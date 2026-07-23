@@ -1,14 +1,18 @@
 ---
 title: Printer Troubleshooting
 category: Troubleshooting
-priority: P3
 tags:
   - printer
-  - hardware
-  - driver
+  - print
+  - scanner
+  - queue
+priority: Medium
+department: IT Help Desk
 ---
 
 # Printer Troubleshooting
+
+...
 
 ## Purpose
 

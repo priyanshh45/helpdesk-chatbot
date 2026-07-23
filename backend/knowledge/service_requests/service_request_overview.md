@@ -1,14 +1,16 @@
 ---
-title: Service Request Overview
-category: Service Request
-priority: Standard
+title: Service Request
+category: ITIL
 tags:
-  - service request
   - request
-  - fulfillment
+  - service
+  - itil
+  - approval
 ---
 
-# Service Request Overview
+# Service Request
+
+...
 
 ## Purpose
 

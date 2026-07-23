@@ -1,14 +1,17 @@
 ---
-title: New Laptop Request
+title: Laptop Request
 category: Service Request
-priority: Standard
 tags:
   - laptop
-  - hardware
   - asset
+  - hardware
+priority: Medium
+department: Asset Management
 ---
 
-# New Laptop Request
+# Laptop Request
+
+...
 
 ## Purpose
 

@@ -1,14 +1,18 @@
 ---
-title: Microsoft Teams Troubleshooting
+title: Microsoft Teams
 category: Troubleshooting
-priority: P3
 tags:
   - teams
-  - collaboration
-  - microsoft365
+  - meeting
+  - call
+  - microsoft
+priority: Medium
+department: IT Help Desk
 ---
 
-# Microsoft Teams Troubleshooting
+# Microsoft Teams
+
+...
 
 ## Purpose
 
