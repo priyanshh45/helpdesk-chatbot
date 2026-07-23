@@ -1,17 +1,30 @@
-const docs = await loadKnowledge();
+const { pipeline } = require("@xenova/transformers");
 
-console.log(`Processing ${docs.length} documents...`);
+let extractor = null;
 
-const database = [];
-
-for (let i = 0; i < docs.length; i++) {
-
-    console.log(`Embedding ${i + 1}/${docs.length}`);
-
-    const vector = await createEmbedding(docs[i].content);
-
-    database.push({
-        ...docs[i],
-        embedding: vector
-    });
+async function loadModel() {
+    if (!extractor) {
+        console.log("Loading embedding model...");
+        extractor = await pipeline(
+            "feature-extraction",
+            "Xenova/all-MiniLM-L6-v2"
+        );
+        console.log("Embedding model loaded.");
+    }
+    return extractor;
 }
+
+async function createEmbedding(text) {
+    const model = await loadModel();
+
+    const output = await model(text, {
+        pooling: "mean",
+        normalize: true,
+    });
+
+    return Array.from(output.data);
+}
+
+module.exports = {
+    createEmbedding,
+};
