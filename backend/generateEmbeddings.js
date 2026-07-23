@@ -1,39 +1,35 @@
 const fs = require("fs-extra");
 
 const { loadKnowledge } = require("./services/loader");
-const { chunkDocuments } = require("./services/chunker");
 const { createEmbedding } = require("./services/embedding");
 
 (async () => {
 
     const docs = await loadKnowledge();
 
-    const chunks = chunkDocuments(docs);
-
-    console.log(`Processing ${chunks.length} chunks...`);
+    console.log(`Loaded ${docs.length} documents`);
 
     const database = [];
 
-    for (let i = 0; i < chunks.length; i++) {
+    for (let i = 0; i < docs.length; i++) {
 
-        console.log(`Embedding ${i + 1}/${chunks.length}`);
+        console.log(`Embedding ${i + 1}/${docs.length}`);
 
-        const vector = await createEmbedding(chunks[i].chunk);
+        const vector = await createEmbedding(docs[i].content);
 
         database.push({
-
-            ...chunks[i],
-
+            ...docs[i],
             embedding: vector
-
         });
 
     }
+
+    await fs.ensureDir("./data");
 
     await fs.writeJson("./data/embeddings.json", database, {
         spaces: 2
     });
 
-    console.log("Embeddings saved successfully!");
+    console.log("Embeddings generated successfully!");
 
 })();
